@@ -1,61 +1,69 @@
 package com.dmitry.bogdanov.underground.entity;
 
 import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "u_passages")
+@Table(name = "passage")
 public class Passage {
 
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private long id;
+    @Column(name = "PASSAGE_ID", unique = true, nullable = false)
+    private long passageId;
 
-    @Column(name = "station_id", nullable = false)
-    private long station_id;
+    @Column(name = "STATION_ID", nullable = false)
+    private long stationId;
 
-    @Column(name = "ticket_id", nullable = false)
-    private long ticket_id;
+//    @ManyToOne(targetEntity = Ticket.class, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "TICKET_ID", nullable = false)
+    @Column(name = "TICKET_ID", nullable = false)
+    private long ticketId;
 
-    @Column(name = "passage_date", nullable = false)
+    @Column(name = "PASSAGE_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date passage_date;
+    private Date passageDate;
 
     public Passage() {
     }
 
-    public long getId() {
-        return id;
+    public Passage(long stationId, long ticketId, Date passageDate) {
+        this.stationId = stationId;
+        this.ticketId = ticketId;
+        this.passageDate = passageDate;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public long getPassageId() {
+        return passageId;
     }
 
-    public long getStation_id() {
-        return station_id;
+    public void setPassageId(long passageId) {
+        passageId = passageId;
     }
 
-    public void setStation_id(long station_id) {
-        this.station_id = station_id;
+    public long getStationId() {
+        return stationId;
     }
 
-    public long getTicket_id() {
-        return ticket_id;
+    public void setStationId(long stationId) {
+        this.stationId = stationId;
     }
 
-    public void setTicket_id(long ticket_id) {
-        this.ticket_id = ticket_id;
+    public long getTicketId() {
+        return ticketId;
     }
 
-    public Date getPassage_date() {
-        return passage_date;
+    public void setTicketId(long ticketId) {
+        this.ticketId = ticketId;
     }
 
-    public void setPassage_date(Date passage_date) {
-        this.passage_date = passage_date;
+    public Date getPassageDate() {
+        return passageDate;
+    }
+
+    public void setPassageDate(Date passageDate) {
+        this.passageDate = passageDate;
     }
 }

@@ -5,56 +5,74 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "u_tickets")
+@Table(name = "ticket")
 public class Ticket {
 
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-    private long id;
+    @Column(name = "TICKET_ID", unique = true, nullable = false)
+    private long ticketId;
 
-    @Column(name = "ticket_type", nullable = false, length = 30)
-    private String ticket_type;
+    @Column(name = "TICKET_TYPE", nullable = false, length = 30)
+    private String ticketType;
 
-    @Column(name = "passages_count", nullable = false, length = 30)
-    private int passages_count;
+    @Column(name = "PASSAGES_COUNT", nullable = false)
+    private long passageCount;
 
-    @Column(name = "activation_date", nullable = false)
+    @Column(name = "ACTIVATION_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date activation_date;
+    private Date activationDate;
+
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId", targetEntity = Passage.class, fetch = FetchType.EAGER)
+//    private Set<Passage> passages = new LinkedHashSet<Passage>();
 
     public Ticket() {
     }
 
-    public long getId() {
-        return id;
+    public Ticket(String ticketType, int passageCount, Date activationDate){
+        this.ticketType = ticketType;
+        this.passageCount = passageCount;
+        this.activationDate = activationDate;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public long getTicketId() {
+        return ticketId;
     }
 
-    public String getTicket_type() {
-        return ticket_type;
+    public void setTicketId(long ticketId) {
+        this.ticketId = ticketId;
     }
 
-    public void setTicket_type(String ticket_type) {
-        this.ticket_type = ticket_type;
+    public String getTicketType() {
+        return ticketType;
     }
 
-    public int getPassages_count() {
-        return passages_count;
+    public void setTicketType(String ticketType) {
+        this.ticketType = ticketType;
     }
 
-    public void setPassages_count(int passages_count) {
-        this.passages_count = passages_count;
+    public long getPassageCount() {
+        return passageCount;
     }
 
-    public Date getActivation_date() {
-        return activation_date;
+    public void setPassageCount(long passageCount) {
+        this.passageCount = passageCount;
     }
 
-    public void setActivation_date(Date activation_date) {
-        this.activation_date = activation_date;
+    public Date getActivationDate() {
+        return activationDate;
     }
+
+    public void setActivationDate(Date activationDate) {
+        this.activationDate = activationDate;
+    }
+
+//    public Set<Passage> getPassages() {
+//        return passages;
+//    }
+//
+//    public void setPassages(Set<Passage> passages) {
+//        this.passages = passages;
+//    }
 }

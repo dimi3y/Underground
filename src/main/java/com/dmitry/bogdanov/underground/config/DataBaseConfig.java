@@ -35,7 +35,7 @@ public class DataBaseConfig {
         em.setPackagesToScan(env.getRequiredProperty("db.entity.package"));
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(getHibernateProperties());
-
+//        em.setMappingResources("");
         return em;
     }
 
@@ -54,7 +54,6 @@ public class DataBaseConfig {
         ds.setMinEvictableIdleTimeMillis(Long.valueOf(env.getRequiredProperty("db.minEvictableIdleTimeMillis")));
         ds.setTestOnBorrow(Boolean.valueOf(env.getRequiredProperty("db.testOnBorrow")));
         ds.setValidationQuery(env.getRequiredProperty("db.validationQuery"));
-
         return ds;
     }
 
@@ -71,7 +70,6 @@ public class DataBaseConfig {
             Properties properties = new Properties();
             InputStream is = getClass().getClassLoader().getResourceAsStream("hibernate.properties");
             properties.load(is);
-
             return properties;
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot find property file", e);
