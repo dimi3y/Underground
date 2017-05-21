@@ -11,7 +11,7 @@ public interface PassageRepository extends JpaRepository<Passage, Long> {
     @Query("SELECT COUNT(p) FROM Passage p WHERE p.stationId = ?1 AND p.passageDate > ?2 " +
             "AND p.passageDate < ?3")
     Long getStationPopularity(long id, Date start, Date end);
-    @Query("SELECT COUNT(p) FROM Passage p WHERE p.passageDate > ?1 " +
+    @Query("SELECT COUNT(p) FROM Passage p WHERE p.passageDate >= ?1 " +
             "AND p.passageDate < ?2")
     Long getLoadInTime(Date start, Date end);
 }

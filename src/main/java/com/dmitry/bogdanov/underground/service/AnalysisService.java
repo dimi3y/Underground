@@ -8,6 +8,6 @@ import java.util.Map;
 public interface AnalysisService {
     List<String> ticketPopularity(String startDate, String finishDate);
     List<String> stationPopularity(String startDate, String finishDate);
-    String loadAnalysis();
+    List<String> loadAnalysis(String date);
     List<Ticket> activeTickets();
 }
