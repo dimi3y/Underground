@@ -14,11 +14,8 @@
 <body>
     Underground load (time/passage) on ${date}
     <c:if test="${not empty lists}">
-        <table border="1">
+        <table border="0">
             <caption></caption>
-                <%--tr>
-                    <th>TICKET_TYPE</th>
-                </tr--%>
             <c:forEach items="${lists}" var="res">
                 <tr><td>${res}</td></tr>
             </c:forEach>

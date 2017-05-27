@@ -1,10 +1,7 @@
 package com.dmitry.bogdanov.underground.service;
 
-import com.dmitry.bogdanov.underground.entity.Station;
-import com.dmitry.bogdanov.underground.entity.Ticket;
-import com.dmitry.bogdanov.underground.repository.PassageRepository;
-import com.dmitry.bogdanov.underground.repository.StationRepository;
-import com.dmitry.bogdanov.underground.repository.TicketRepository;
+import com.dmitry.bogdanov.underground.entity.*;
+import com.dmitry.bogdanov.underground.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +13,50 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class AnalysisServiceImpl implements AnalysisService{
+public class UndergroundServiceImpl implements UndergroundService {
 
     private final TicketRepository ticketRepository;
-
     private final PassageRepository passageRepository;
-
     private final StationRepository stationRepository;
+    private final UndergroundUserRepository undergroundUserRepository;
+    private final UserTypeRepository userTypeRepository;
+    private final TicketTypeRepository ticketTypeRepository;
 
     @Autowired
-    public AnalysisServiceImpl(TicketRepository ticketRepository, PassageRepository passageRepository, StationRepository stationRepository) {
+    public UndergroundServiceImpl(TicketRepository ticketRepository, PassageRepository passageRepository, StationRepository stationRepository, UndergroundUserRepository undergroundUserRepository, UserTypeRepository userTypeRepository, TicketTypeRepository ticketTypeRepository) {
         this.ticketRepository = ticketRepository;
         this.passageRepository = passageRepository;
         this.stationRepository = stationRepository;
+        this.undergroundUserRepository = undergroundUserRepository;
+        this.userTypeRepository = userTypeRepository;
+        this.ticketTypeRepository = ticketTypeRepository;
     }
 
+    public String checkUser(UndergroundUser undergroundUser){
+        UndergroundUser fuser = undergroundUserRepository.getByLogin(undergroundUser.getUserLogin());
+
+        if(fuser != null){
+            if(undergroundUser.getUserPassword().equals(fuser.getUserPassword())){
+                return userTypeRepository.getUserTypeNameById(fuser.getUserTypeId());
+            } else {
+                return "Incorrect password";
+            }
+        } else {
+            return "No such user";
+        }
+    }
+
+    @Override
+    public List<UndergroundUser> getAllUsers() {
+        return undergroundUserRepository.findAllUsers();
+    }
+
+    @Override
+    public List<UserType> getUserTypes() {
+        return userTypeRepository.getAllUserTypes();
+    }
+
+    @Override
     public List<String>  ticketPopularity(String startDate, String finishDate) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         List<String> result = null;
@@ -40,10 +66,13 @@ public class AnalysisServiceImpl implements AnalysisService{
             sDate = df.parse(startDate);
             fDate = df.parse(finishDate);
             String[][] list;
+//            String[][] types;
+//            types =
             if((list = ticketRepository.getTicketPopularity(sDate, fDate)) != null) {
-                result = new ArrayList<String>();
+                result = new ArrayList<>(list.length);
                 for (String[] aList : list)
-                    result.add(aList[0] + " popularity: " + aList[1]);
+                    result.add("\"" + ticketTypeRepository.getTicketTypeById(Long.valueOf(aList[0]))
+                            + "\"" + " popularity: " + aList[1]);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -52,6 +81,7 @@ public class AnalysisServiceImpl implements AnalysisService{
         return result;
     }
 
+    @Override
     public List<String> stationPopularity(String startDate, String finishDate) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         List<String> result = null;
@@ -79,6 +109,7 @@ public class AnalysisServiceImpl implements AnalysisService{
         return result;
     }
 
+    @Override
     public List<String> loadAnalysis(String date) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         List<String> result = null;
@@ -100,7 +131,45 @@ public class AnalysisServiceImpl implements AnalysisService{
         return result;
     }
 
+    @Override
     public List<Ticket> activeTickets() {
         return ticketRepository.getAllActive();
     }
+
+    @Override
+    public boolean deleteUser(long id) {
+        undergroundUserRepository.deleteUsersById(id);
+        return undergroundUserRepository.getUserById(id) == null;
+    }
+
+    @Override
+    public Ticket getTicketInfo(long ticketId){
+        return ticketRepository.getTicketById(ticketId);
+    }
+
+    @Override
+    public List<Passage> getPassagesByTId(long id){
+        return passageRepository.getPassagesByTicketId(id);
+    }
+
+    @Override
+    public UndergroundUser getUser(long id) {
+        return undergroundUserRepository.getUserById(id);
+    }
+
+    @Override
+    public String getTicketType(long ticketTypeId) {
+        return ticketTypeRepository.getTicketTypeById(ticketTypeId);
+    }
+
+    @Override
+    public void updUser(UndergroundUser user) {
+        if(user.getUserId() != 0)
+            undergroundUserRepository.updateUser(user.getUserId(), user.getUserLogin(), user.getUserPassword(), user.getUserTypeId());
+        else
+            undergroundUserRepository.save(user);
+        undergroundUserRepository.flush();
+    }
+
+
 }

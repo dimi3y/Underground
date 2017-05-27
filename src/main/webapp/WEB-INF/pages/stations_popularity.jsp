@@ -9,16 +9,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title>Stations popularity</title>
+    <title></title>
 </head>
 <body>
     Stations popularity from ${sdate} to ${fdate}
     <c:if test="${not empty lists}">
-        <table border="1">
+        <table border="0">
             <caption>Stations popularity</caption>
-            <%--tr>
-                <th>TICKET_TYPE</th>
-            </tr--%>
             <c:forEach items="${lists}" var="res">
                 <tr><td>${res}</td></tr>
             </c:forEach>
