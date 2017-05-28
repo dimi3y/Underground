@@ -3,9 +3,11 @@ package com.dmitry.bogdanov.underground.controller;
 import com.dmitry.bogdanov.underground.entity.Passage;
 import com.dmitry.bogdanov.underground.entity.Ticket;
 import com.dmitry.bogdanov.underground.entity.UndergroundUser;
+import com.dmitry.bogdanov.underground.entity.UserType;
 import com.dmitry.bogdanov.underground.service.UndergroundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.awt.*;
@@ -13,16 +15,16 @@ import java.util.*;
 import java.util.List;
 
 @RestController
+@SessionAttributes("user")
 public class UndergroundController {
 
     @Autowired
     private UndergroundService service;
 
-    //@RequestMapping(value = )
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView loginPage(@ModelAttribute("message") String message) {
-
+    public ModelAndView loginPage(@ModelAttribute("message") String message,
+                                  @ModelAttribute("user") UndergroundUser user, SessionStatus sessionStatus) {
+        sessionStatus.setComplete();
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("user", new UndergroundUser("login", "password"));
         modelAndView.addObject("message", message.equals("") ?
@@ -32,29 +34,47 @@ public class UndergroundController {
         return modelAndView;
     }
 
+    @ModelAttribute("user")
+    public UndergroundUser createUser() {
+        return new UndergroundUser("login", "password");
+    }
+
     @RequestMapping(value = "/main", method = RequestMethod.POST)
-    public ModelAndView mainPage(@ModelAttribute("user") UndergroundUser user) {
+    public ModelAndView mainPage(@ModelAttribute("message") String message,
+                                 @ModelAttribute("user") UndergroundUser user,
+                                 @RequestParam(name = "login", required = false) String login) {
         String roleOrError = service.checkUser(user);
         ModelAndView modelAndView = new ModelAndView();
 
         switch (roleOrError) {
             case "ADMIN":
-                modelAndView.addObject("message", "Welcome, " + user.getUserLogin());
-                modelAndView.addObject("users", service.getAllUsers());
+                modelAndView.addObject("message", message.equals("") ?
+                        ("Welcome, " + user.getUserLogin()) : message);
+                List<UndergroundUser> list;
+                if(login == null)
+                    list = service.getAllUsers();
+                else {
+                    list = new ArrayList<>(1);
+                    list.add(service.getUserWithLogin(login));
+                }
+                modelAndView.addObject("users", list);
                 modelAndView.addObject("user", user);
                 modelAndView.addObject("types", service.getUserTypes());
                 modelAndView.setViewName("admin_index");
                 break;
             case "OPERATOR":
-                modelAndView.addObject("message", "Welcome, " + user.getUserLogin());
+                modelAndView.addObject("message", message.equals("") ?
+                        "Welcome, " + user.getUserLogin() : message);
+                modelAndView.addObject("user", user);
                 modelAndView.setViewName("operator_index");
                 break;
             case "USER":
                 modelAndView.addObject("message", "Welcome, " + user.getUserLogin());
+                modelAndView.addObject("user", user);
                 modelAndView.setViewName("user_index");
                 break;
             default:
-                modelAndView.addObject("user", user);
+//                modelAndView.addObject("user", user);
                 modelAndView.addObject("message", roleOrError + ", please try again");
                 modelAndView.setViewName("login");
                 break;
@@ -68,42 +88,24 @@ public class UndergroundController {
     public ModelAndView userView(@RequestParam(name = "edit_id", required = true) long id) {
 
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("cuser", id != 0 ? service.getUser(id) : new UndergroundUser("login", "password", 0));
-//        modelAndView.addObject("user", user);
+        modelAndView.addObject("cuser", id != 0 ? service.getUser(id) :
+                new UndergroundUser("login", "password", 0));
         modelAndView.setViewName("user_view");
-//        modelAndView.addObject("ms", message.equals("") ?
-//                "Enter your login and password to sign in" : message);
-//        modelAndView.setViewName("edit_user");
 
         return modelAndView;
     }
 
-    @RequestMapping(value = "/usredit", method = RequestMethod.POST)
+    @RequestMapping(value = "/usr", method = RequestMethod.POST)
     public ModelAndView userEdit(@ModelAttribute("cuser") UndergroundUser cuser) {
 
         service.updUser(cuser);
-        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.addObject("user", user);
-//        modelAndView.addObject("cuser", cuser);
+        ModelAndView modelAndView = new ModelAndView();//("redirect:main");
+        modelAndView.addObject("message", "Updated user " + cuser.getUserLogin());
+        modelAndView.addObject("users", service.getAllUsers());
         modelAndView.setViewName("admin_index");
-//        modelAndView.addObject("ms", message.equals("") ?
-//                "Enter your login and password to sign in" : message);
-//        modelAndView.setViewName("edit_user");
+
         return modelAndView;
     }
-
-//    @RequestMapping(value = "/usr", method = RequestMethod.POST)
-//    public ModelAndView addUser(@ModelAttribute("user") UndergroundUser user) {
-//
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.addObject("user", user);
-//        modelAndView.setViewName("edit_user");
-////        modelAndView.addObject("ms", message.equals("") ?
-////                "Enter your login and password to sign in" : message);
-////        modelAndView.setViewName("edit_user");
-//
-//        return modelAndView;
-//    }
 
     @RequestMapping(value = "/usr", method = RequestMethod.GET)
     public ModelAndView deleteUser(@RequestParam(name = "delete_id", required = true) long id) {
@@ -151,6 +153,18 @@ public class UndergroundController {
         modelAndView.addObject("date", date);
         modelAndView.addObject("lists", load);
         modelAndView.setViewName("ug_load");
+
+        return modelAndView;
+    }
+
+
+    @RequestMapping(value = "/tblk", method = RequestMethod.GET)
+    public ModelAndView undergroundLoadController(@RequestParam(name = "id", required = true) long id) {
+        service.blockTicket(id);
+
+        ModelAndView modelAndView = new ModelAndView("redirect:main");
+        modelAndView.addObject("user");
+        modelAndView.addObject("message", "Successfully blocked ticket with id = " + id);
 
         return modelAndView;
     }

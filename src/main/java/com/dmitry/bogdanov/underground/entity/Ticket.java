@@ -24,22 +24,6 @@ public class Ticket {
     @Column(name = "TICKET_TYPE_ID", nullable = false)
     private long ticketTypeId;
 
-    public long getTicketTypeId() {
-        return ticketTypeId;
-    }
-
-    public void setTicketTypeId(long ticketTypeId) {
-        this.ticketTypeId = ticketTypeId;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
     @Column(name = "IS_ACTIVE", nullable = false)
     private boolean isActive;
 
@@ -78,11 +62,19 @@ public class Ticket {
         this.activationDate = activationDate;
     }
 
-//    public Set<Passage> getPassages() {
-//        return passages;
-//    }
-//
-//    public void setPassages(Set<Passage> passages) {
-//        this.passages = passages;
-//    }
+    public long getTicketTypeId() {
+        return ticketTypeId;
+    }
+
+    public void setTicketTypeId(long ticketTypeId) {
+        this.ticketTypeId = ticketTypeId;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 }

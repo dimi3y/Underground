@@ -24,4 +24,6 @@ public interface UndergroundService {
     UndergroundUser getUser(long id);
     String getTicketType(long id);
     void updUser(UndergroundUser user);
+    void blockTicket(long id);
+    UndergroundUser getUserWithLogin(String login);
 }

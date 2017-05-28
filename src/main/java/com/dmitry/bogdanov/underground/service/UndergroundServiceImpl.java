@@ -171,5 +171,15 @@ public class UndergroundServiceImpl implements UndergroundService {
         undergroundUserRepository.flush();
     }
 
+    @Override
+    public void blockTicket(long id) {
+        ticketRepository.blockTicketById(id);
+    }
+
+    @Override
+    public UndergroundUser getUserWithLogin(String login) {
+        return undergroundUserRepository.getByLogin(login);
+    }
+
 
 }
