@@ -9,17 +9,27 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-    <title></title>
+    <title>Stations popularity</title>
+    <style>
+        <%@ include file="./styles/bootstrap.min.css"%>
+        <%@ include file="./styles/ticketpop.css"%>
+    </style>
 </head>
 <body>
-    Stations popularity from ${sdate} to ${fdate}
-    <c:if test="${not empty lists}">
-        <table border="0">
-            <caption>Stations popularity</caption>
-            <c:forEach items="${lists}" var="res">
-                <tr><td>${res}</td></tr>
-            </c:forEach>
-        </table>
-    </c:if>
+<div class="container">
+    <div class="ticket-info">
+        <p><strong>Stations popularity from ${sdate} to ${fdate}</strong></p>
+        <c:if test="${not empty lists}">
+            <table border="0" class="table">
+                <caption>Stations popularity</caption>
+                <c:forEach items="${lists}" var="res">
+                    <tr>
+                        <td>${res}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+    </div>
+</div>
 </body>
 </html>

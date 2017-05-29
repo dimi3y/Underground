@@ -10,16 +10,26 @@
 <html>
 <head>
     <title>Underground load analisys</title>
+    <style>
+        <%@ include file="./styles/bootstrap.min.css"%>
+        <%@ include file="./styles/ticketpop.css"%>
+    </style>
 </head>
 <body>
-    Underground load (time/passage) on ${date}
-    <c:if test="${not empty lists}">
-        <table border="0">
-            <caption></caption>
-            <c:forEach items="${lists}" var="res">
-                <tr><td>${res}</td></tr>
-            </c:forEach>
-        </table>
-    </c:if>
+<div class="container">
+    <div class="ticket-info">
+        <p><strong>Underground load (time/passage) on ${date}</strong></p>
+        <c:if test="${not empty lists}">
+            <table border="0" class="table">
+                <caption></caption>
+                <c:forEach items="${lists}" var="res">
+                    <tr>
+                        <td>${res}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+    </div>
+</div>
 </body>
 </html>

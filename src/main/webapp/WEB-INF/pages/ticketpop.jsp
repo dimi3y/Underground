@@ -3,16 +3,25 @@
 <html>
 <head>
     <title>Ticket popularity</title>
+    <style>
+        <%@ include file="./styles/bootstrap.min.css"%>
+        <%@ include file="./styles/ticketpop.css"%>
+    </style>
 </head>
 <body>
-    Tickets popularity from ${sdate} to ${fdate}
-    <c:if test="${not empty lists}">
-        <table border="0">
-            <caption></caption>
-            <c:forEach items="${lists}" var="res">
-                <tr><td>${res}</td></tr>
-            </c:forEach>
-        </table>
-    </c:if>
+<div class="container">
+    <div class="ticket-info">
+        <p><strong>Tickets popularity from ${sdate} to ${fdate}</strong></p>
+        <c:if test="${not empty lists}">
+            <table border="0" class="table">
+                <c:forEach items="${lists}" var="res">
+                    <tr>
+                        <td>${res}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+    </div>
+</div>
 </body>
 </html>

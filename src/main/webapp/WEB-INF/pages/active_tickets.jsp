@@ -3,19 +3,32 @@
 <html>
 <head>
     <title>Active tickets</title>
+    <style>
+        <%@ include file="./styles/bootstrap.min.css"%>
+        <%@ include file="./styles/ticketpop.css"%>
+    </style>
 </head>
 <body>
-    <table border="0">
-        <caption>Active tickets table</caption>
-        <tr>
-            <th>TICKET_ID</th>
-            <th>TICKET_TYPE</th>
-            <th>PASSAGES_COUNT</th>
-            <th>ACTIVATION_DATE</th>
-        </tr>
-        <c:forEach items="${tickets}" var="ticket">
-            <tr><td>${ticket.ticketId}</td><td>${ticket.ticketTypeId}</td><td>${ticket.passageCount}</td><td>${ticket.activationDate}</td></tr>
-        </c:forEach>
-    </table>
+<div class="container">
+    <div class="ticket-info">
+        <p><strong>Active tickets</strong></p>
+        <table border="0" class="table">
+            <tr>
+                <th>TICKET_ID</th>
+                <th>TICKET_TYPE</th>
+                <th>PASSAGES_COUNT</th>
+                <th>ACTIVATION_DATE</th>
+            </tr>
+            <c:forEach items="${tickets}" var="ticket">
+                <tr>
+                    <td>${ticket.ticketId}</td>
+                    <td>${ticket.ticketTypeId}</td>
+                    <td>${ticket.passageCount}</td>
+                    <td>${ticket.activationDate}</td>
+                </tr>
+            </c:forEach>
+        </table>
+    </div>
+</div>
 </body>
 </html>

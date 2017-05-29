@@ -1,0 +1,29 @@
+.operator-container {
+    padding: 2rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+
+.search input {
+    margin-right: .5rem;
+}
+
+.operator-control-table {
+    max-width: 600px;
+}
+
+.calculate-td {
+    vertical-align: bottom !important;
+    max-width: 65px;
+}
+
+.operator-table-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
